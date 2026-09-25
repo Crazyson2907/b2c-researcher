@@ -1,0 +1,4 @@
+tool/build/
+tool/.gradle/
+tool/.kotlin/
+wikitrend-runs/

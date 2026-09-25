@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Entry point for the skill. Builds the Kotlin CLI on first use (or after source changes), then runs it.
+set -euo pipefail
+
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN="$SKILL_DIR/tool/build/install/wikitrend/bin/wikitrend"
+STAMP="$SKILL_DIR/tool/build/install/.built"
+
+needs_build() {
+  [[ ! -x "$BIN" || ! -f "$STAMP" ]] && return 0
+  [[ -n "$(find "$SKILL_DIR/tool/src/main" "$SKILL_DIR/tool/build.gradle.kts" -newer "$STAMP" -print -quit 2>/dev/null)" ]]
+}
+
+if needs_build; then
+  "$SKILL_DIR/scripts/setup.sh"
+fi
+
+exec "$BIN" "$@"
